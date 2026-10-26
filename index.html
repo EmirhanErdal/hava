@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hava'ya Davetiye</title>
+<meta name="description" content="Açmadan önce derin bir nefes al.">
+<meta property="og:title" content="Hava'ya özel bir davetiye 💌">
+<meta property="og:description" content="Açmadan önce derin bir nefes al.">
+<meta name="theme-color" content="#0b1530">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy-950: #070e22;
+    --navy-900: #0b1530;
+    --navy-800: #12204a;
+    --navy-700: #1b2d63;
+    --navy-600: #2a4185;
+    --cream: #fdf6e9;
+    --paper: #fffaf1;
+    --ink: #13204a;
+    --ink-soft: #55628a;
+    --gold: #f2c46d;
+    --pink: #ff9fb2;
+    --line: #e9dcc4;
+    --radius: 22px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: var(--navy-900);
+    color: var(--cream);
+    font-family: "Nunito", system-ui, sans-serif;
+    overflow-x: hidden;
+    min-height: 100dvh;
+  }
+  #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(120% 80% at 50% 0%, var(--navy-700) 0%, var(--navy-900) 55%, var(--navy-950) 100%); }
+  .star { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; animation: twinkle 3s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100% { opacity: .15; } 50% { opacity: .9; } }
+
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+
+  main { position: relative; z-index: 1; max-width: 460px; margin: 0 auto; padding: 20px 16px 40px; min-height: 100dvh; display: flex; flex-direction: column; }
+
+  .screen { display: none; flex: 1; flex-direction: column; }
+  .screen[data-screen="ask"] { justify-content: center; padding-bottom: 8vh; }
+  .screen.active { display: flex; animation: enter .55s cubic-bezier(.2,.8,.2,1); }
+  @keyframes enter { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+
+  h1, h2 { font-family: "Fraunces", Georgia, serif; font-weight: 700; margin: 0; line-height: 1.15; letter-spacing: -.01em; }
+  h1 { font-size: clamp(28px, 8vw, 36px); }
+  h2 { font-size: clamp(24px, 6.6vw, 30px); }
+  .hand { font-family: "Caveat", cursive; }
+  .sub { color: #b9c6ea; font-size: 15px; line-height: 1.5; margin: 8px 0 0; }
+
+  /* üst bar */
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; min-height: 36px; }
+  .back { background: rgba(255,255,255,.08); border: 0; color: var(--cream); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+  .dots { display: flex; gap: 6px; flex: 1; justify-content: center; padding-right: 36px; }
+  .dots i { width: 8px; height: 8px; border-radius: 99px; background: rgba(255,255,255,.18); transition: all .3s; }
+  .dots i.on { width: 22px; background: var(--gold); }
+
+  /* butonlar */
+  .btn { appearance: none; border: 0; cursor: pointer; font: 800 17px "Nunito", sans-serif; border-radius: 99px; padding: 15px 26px; transition: transform .15s, box-shadow .2s, opacity .2s; }
+  .btn:active { transform: scale(.96); }
+  .btn-gold { background: var(--gold); color: var(--navy-900); box-shadow: 0 8px 24px -8px rgba(242,196,109,.7); }
+  .btn-ghost { background: rgba(255,255,255,.1); color: var(--cream); }
+  .btn[disabled] { opacity: .35; pointer-events: none; }
+  .next { margin-top: auto; width: 100%; position: sticky; bottom: 16px; z-index: 5; }
+  .footer-space { height: 18px; }
+
+  /* kuzu */
+  .kuzu-row { display: flex; align-items: flex-end; gap: 10px; margin: 6px 0 18px; }
+  .kuzu { width: 92px; flex: none; animation: bob 2.6s ease-in-out infinite; filter: drop-shadow(0 8px 10px rgba(0,0,0,.35)); }
+  .kuzu.small { width: 64px; }
+  @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+  .kuzu .eyes { transform-origin: 60px 62px; animation: blink 4.5s infinite; }
+  @keyframes blink { 0%,94%,100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+  .bubble { position: relative; background: var(--paper); color: var(--ink); border-radius: 18px 18px 18px 4px; padding: 12px 14px; font-size: 15px; line-height: 1.4; font-weight: 600; box-shadow: 0 10px 30px -12px rgba(0,0,0,.5); }
+  .bubble b { color: var(--navy-600); }
+
+  /* zarf */
+  .env-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 28px; }
+  .envelope { position: relative; width: min(300px, 82vw); aspect-ratio: 3 / 2; cursor: pointer; perspective: 900px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100% { translate: 0 0; rotate: -1.5deg; } 50% { translate: 0 -8px; rotate: 1.5deg; } }
+  .env-back { position: absolute; inset: 0; background: #e8dcc6; border-radius: 10px; }
+  .letter { position: absolute; left: 7%; right: 7%; top: 8%; height: 84%; background: var(--paper); border-radius: 6px; color: var(--ink); display: flex; align-items: center; justify-content: center; font-family: "Caveat", cursive; font-size: 30px; font-weight: 700; transition: transform .8s cubic-bezier(.3,1.4,.5,1) .35s; z-index: 1; }
+  .env-front { position: absolute; inset: 0; z-index: 2; border-radius: 10px; overflow: hidden; pointer-events: none; }
+  .env-front::before { content: ""; position: absolute; inset: 0; background: var(--cream); clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%); }
+  .env-front::after { content: ""; position: absolute; inset: 0; background: #f3e7d1; clip-path: polygon(0 100%, 50% 50%, 100% 100%); }
+  .flap { position: absolute; left: 0; right: 0; top: 0; height: 60%; background: #efe2c9; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform .6s ease, z-index 0s .3s; z-index: 3; }
+  .seal { position: absolute; left: 50%; top: 54%; translate: -50% -50%; width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #3b5bb5, var(--navy-700) 70%); z-index: 4; display: grid; place-items: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,.3), inset 0 0 0 4px rgba(255,255,255,.12); transition: opacity .3s, scale .3s; }
+  .envelope.open { animation: none; }
+  .envelope.open .flap { transform: rotateX(180deg); z-index: 0; }
+  .envelope.open .seal { opacity: 0; scale: .4; }
+  .envelope.open .letter { transform: translateY(-62%); }
+  .tap-hint { color: #b9c6ea; font-size: 15px; animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
+
+  /* büyük soru */
+  .ask-card { background: var(--paper); color: var(--ink); border-radius: var(--radius); padding: 26px 22px; text-align: center; box-shadow: 0 30px 60px -25px rgba(0,0,0,.6); }
+  .ask-card .date { display: inline-block; background: var(--navy-800); color: var(--gold); font-weight: 800; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; padding: 6px 12px; border-radius: 99px; margin-bottom: 14px; }
+  .ask-card h1 { color: var(--ink); }
+  .ask-card .hand { font-size: 24px; color: var(--navy-600); margin-top: 10px; }
+  .yn { display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 22px; min-height: 64px; }
+  #yes { transition: transform .25s cubic-bezier(.3,1.5,.5,1); }
+  .no-btn { background: #ece4d4; color: var(--ink-soft); }
+  .no-btn.flying { position: fixed; z-index: 40; transition: left .35s cubic-bezier(.3,1.4,.5,1), top .35s cubic-bezier(.3,1.4,.5,1), transform .25s; white-space: nowrap; }
+
+  .yay { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .yay .big { font-size: 64px; animation: pop .6s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { from { scale: 0; } to { scale: 1; } }
+
+  /* mekan kartları */
+  .venues { display: flex; flex-direction: column; gap: 14px; margin: 18px 0 22px; }
+  .venue { position: relative; text-align: left; width: 100%; border: 2px solid transparent; background: var(--paper); color: var(--ink); border-radius: var(--radius); padding: 18px 18px 16px; cursor: pointer; font: inherit; transition: transform .2s, border-color .2s, box-shadow .2s; box-shadow: 0 16px 30px -18px rgba(0,0,0,.6); }
+  .venue:active { transform: scale(.985); }
+  .venue.sel { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(242,196,109,.35), 0 16px 30px -18px rgba(0,0,0,.6); }
+  .venue .check { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: 14px; color: transparent; transition: all .2s; }
+  .venue.sel .check { background: var(--gold); border-color: var(--gold); color: var(--navy-900); }
+  .v-head { display: flex; gap: 12px; align-items: center; padding-right: 34px; }
+  .v-emoji { width: 46px; height: 46px; flex: none; border-radius: 14px; background: var(--navy-800); display: grid; place-items: center; font-size: 24px; }
+  .v-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 20px; line-height: 1.1; }
+  .v-area { color: var(--ink-soft); font-size: 13px; font-weight: 700; margin-top: 3px; }
+  .v-badge { display: inline-block; margin-top: 12px; background: var(--navy-800); color: var(--gold); font-size: 12.5px; font-weight: 800; padding: 5px 10px; border-radius: 99px; }
+  .v-note { font-family: "Caveat", cursive; font-size: 21px; line-height: 1.15; color: var(--navy-600); margin: 12px 0 10px; }
+  .stat { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 13.5px; font-weight: 700; padding: 5px 0; border-top: 1px dashed var(--line); }
+  .meter { display: flex; gap: 3px; }
+  .meter i { width: 14px; height: 7px; border-radius: 3px; background: var(--line); }
+  .meter i.f { background: var(--navy-600); }
+  .stat .val { color: var(--ink-soft); font-weight: 700; text-align: right; }
+  .stat.lamb .val { color: #c2456b; }
+
+  /* seçenek çipleri */
+  .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0 14px; }
+  .chip { border: 2px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); color: var(--cream); border-radius: 18px; padding: 18px 10px; font: 800 22px "Fraunces", serif; cursor: pointer; transition: all .2s; }
+  .chip.sel { background: var(--gold); color: var(--navy-900); border-color: var(--gold); transform: translateY(-2px); }
+  .note-out { min-height: 64px; font-family: "Caveat", cursive; font-size: 24px; color: var(--gold); text-align: center; line-height: 1.15; padding: 4px 8px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 6px; }
+  .opt { text-align: left; border: 2px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); color: var(--cream); border-radius: 16px; padding: 15px 16px; font: 700 16px "Nunito", sans-serif; cursor: pointer; transition: all .2s; display: flex; gap: 12px; align-items: center; }
+  .opt .em { font-size: 22px; }
+  .opt.sel { background: var(--cream); color: var(--ink); border-color: var(--gold); }
+  .opt.locked { opacity: .45; cursor: not-allowed; text-decoration: line-through; }
+  .q-block { margin-top: 18px; }
+  .q-block h3 { margin: 0; font-family: "Fraunces", serif; font-size: 20px; }
+  .toast { position: fixed; left: 50%; bottom: 28px; translate: -50% 20px; opacity: 0; background: var(--paper); color: var(--ink); font-weight: 800; padding: 12px 18px; border-radius: 99px; box-shadow: 0 12px 30px -10px rgba(0,0,0,.6); transition: all .3s; z-index: 60; white-space: nowrap; font-size: 14.5px; }
+  .toast.show { opacity: 1; translate: -50% 0; }
+
+  /* antlaşma */
+  .treaty { background: var(--paper); color: var(--ink); border-radius: var(--radius); padding: 22px 20px; margin: 16px 0 18px; position: relative; box-shadow: 0 30px 60px -25px rgba(0,0,0,.6); }
+  .treaty::before { content: ""; position: absolute; inset: 8px; border: 1.5px solid var(--line); border-radius: 16px; pointer-events: none; }
+  .treaty h2 { color: var(--ink); text-align: center; font-size: 24px; }
+  .treaty .seal-line { text-align: center; font-size: 12px; letter-spacing: .16em; font-weight: 800; color: var(--ink-soft); margin: 4px 0 14px; text-transform: uppercase; }
+  .treaty ol { margin: 0; padding-left: 20px; font-size: 14.5px; line-height: 1.5; }
+  .treaty li { margin-bottom: 6px; }
+  .sig-label { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; font-size: 13px; font-weight: 800; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; }
+  .sig-label button { background: none; border: 0; color: var(--navy-600); font: 800 13px "Nunito", sans-serif; cursor: pointer; text-transform: none; letter-spacing: 0; }
+  #sig { display: block; width: 100%; height: 140px; border-radius: 14px; background: #fff; border: 2px dashed var(--line); touch-action: none; margin-top: 6px; cursor: crosshair; }
+  .sig-hint { text-align: center; font-family: "Caveat", cursive; font-size: 20px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* bilet */
+  .ticket { margin: 18px 0; background: var(--paper); color: var(--ink); border-radius: var(--radius); overflow: hidden; box-shadow: 0 30px 60px -25px rgba(0,0,0,.7); animation: pop .7s cubic-bezier(.3,1.4,.5,1); }
+  .t-top { background: var(--navy-800); color: var(--cream); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .t-top .brand { font-family: "Fraunces", serif; font-weight: 700; font-size: 18px; }
+  .t-top .cls { font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--gold); text-align: right; line-height: 1.3; }
+  .t-route { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 6px; }
+  .t-route .who { font-family: "Fraunces", serif; font-size: 28px; font-weight: 700; }
+  .t-route .lbl { font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--ink-soft); text-transform: uppercase; }
+  .t-route .mid { flex: 1; text-align: center; color: var(--navy-600); font-size: 20px; position: relative; }
+  .t-route .mid::before { content: ""; position: absolute; left: 10%; right: 10%; top: 50%; border-top: 2px dashed var(--line); z-index: 0; }
+  .t-route .mid span { position: relative; background: var(--paper); padding: 0 6px; }
+  .t-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; padding: 14px 20px 18px; }
+  .t-grid .lbl { font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--ink-soft); text-transform: uppercase; }
+  .t-grid .v { font-weight: 800; font-size: 16px; margin-top: 2px; }
+  .t-grid .wide { grid-column: 1 / -1; }
+  .t-cut { position: relative; border-top: 2px dashed var(--line); margin: 0 14px; }
+  .t-cut::before, .t-cut::after { content: ""; position: absolute; top: -13px; width: 24px; height: 24px; border-radius: 50%; background: var(--navy-900); }
+  .t-cut::before { left: -26px; } .t-cut::after { right: -26px; }
+  .t-bottom { display: flex; gap: 14px; align-items: center; padding: 16px 20px 20px; }
+  .t-bottom img { height: 56px; max-width: 46%; object-fit: contain; }
+  .barcode { flex: 1; height: 50px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 13px); border-radius: 2px; opacity: .85; }
+  .countdown { text-align: center; color: #b9c6ea; font-size: 15px; margin-bottom: 14px; }
+  .countdown b { color: var(--gold); font-family: "Fraunces", serif; font-size: 20px; }
+  .wa { display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; background: #25d366; color: #06301a; box-shadow: 0 8px 24px -8px rgba(37,211,102,.7); }
+  .ps { text-align: center; margin-top: 16px; font-family: "Caveat", cursive; font-size: 22px; color: #b9c6ea; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<canvas id="confetti"></canvas>
+<div class="toast" id="toast"></div>
+
+<template id="kuzu-tpl">
+  <svg class="kuzu" viewBox="0 0 120 110" aria-hidden="true">
+    <ellipse cx="60" cy="104" rx="34" ry="4" fill="rgba(0,0,0,.25)"/>
+    <rect x="40" y="82" width="8" height="20" rx="4" fill="#2a2140"/>
+    <rect x="72" y="82" width="8" height="20" rx="4" fill="#2a2140"/>
+    <g fill="#ffffff">
+      <circle cx="32" cy="62" r="20"/><circle cx="50" cy="48" r="22"/><circle cx="72" cy="48" r="22"/>
+      <circle cx="90" cy="62" r="20"/><circle cx="44" cy="76" r="20"/><circle cx="76" cy="76" r="20"/>
+      <circle cx="60" cy="70" r="24"/>
+    </g>
+    <ellipse cx="41" cy="58" rx="10" ry="5" fill="#f2c9b0" transform="rotate(-25 41 58)"/>
+    <ellipse cx="79" cy="58" rx="10" ry="5" fill="#f2c9b0" transform="rotate(25 79 58)"/>
+    <ellipse cx="60" cy="64" rx="16" ry="18" fill="#f8e2d0"/>
+    <g fill="#ffffff"><circle cx="52" cy="46" r="8"/><circle cx="60" cy="42" r="9"/><circle cx="68" cy="46" r="8"/></g>
+    <g class="eyes">
+      <circle cx="54" cy="63" r="2.8" fill="#1a1530"/><circle cx="66" cy="63" r="2.8" fill="#1a1530"/>
+      <circle cx="54.9" cy="62" r=".9" fill="#fff"/><circle cx="66.9" cy="62" r=".9" fill="#fff"/>
+    </g>
+    <ellipse cx="49" cy="70" rx="4" ry="2.4" fill="#ff9fb2" opacity=".75"/>
+    <ellipse cx="71" cy="70" rx="4" ry="2.4" fill="#ff9fb2" opacity=".75"/>
+    <path d="M57 71 q3 3 6 0" stroke="#1a1530" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  </svg>
+</template>
+
+<main>
+  <!-- 0: zarf -->
+  <section class="screen active" data-screen="envelope">
+    <div class="env-wrap">
+      <div>
+        <h1>Hava'ya özel 💌</h1>
+        <p class="sub">Bu bir davetiye. Açmadan önce derin bir nefes al.</p>
+      </div>
+      <div class="envelope" id="envelope" role="button" aria-label="Zarfı aç">
+        <div class="env-back"></div>
+        <div class="letter">Merhaba Hava 💙</div>
+        <div class="env-front"></div>
+        <div class="flap"></div>
+        <div class="seal">💙</div>
+      </div>
+      <div class="tap-hint">açmak için zarfa dokun</div>
+    </div>
+  </section>
+
+  <!-- 1: büyük soru -->
+  <section class="screen" data-screen="ask">
+    <div class="kuzu-row">
+      <div data-kuzu></div>
+      <div class="bubble">Selam! Ben <b>Kuzu</b>. Emirhan beni çok sevdiğini söylüyor, yanlış anlamda. Neyse, barıştık. Bugün onun elçisiyim 🐑</div>
+    </div>
+    <div class="ask-card">
+      <div class="date">30 Ekim · Cuma akşamı</div>
+      <h1>Hava, benimle yemeğe çıkar mısın?</h1>
+      <div class="hand">(cevabı biliyorum ama sormak istedim)</div>
+      <div class="yn">
+        <button class="btn btn-gold" id="yes">Evet 💙</button>
+        <button class="btn no-btn" id="no">Hayır</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2: sevinç -->
+  <section class="screen" data-screen="yay">
+    <div class="yay">
+      <div class="big">🥳</div>
+      <h1>Biliyordum!</h1>
+      <p class="sub">Yani aslında bilmiyordum. Çok gerildim.<br>Şimdi birkaç ufak karar kaldı.</p>
+      <div data-kuzu></div>
+    </div>
+    <button class="btn btn-gold next" data-go="venue">Hadi başlayalım →</button>
+  </section>
+
+  <!-- 3: mekan -->
+  <section class="screen" data-screen="venue">
+    <div class="topbar"><button class="back" data-back aria-label="Geri">←</button><div class="dots" data-step="1"></div></div>
+    <h2>Önce mekan 🍽️</h2>
+    <p class="sub">5 aday var, seçim tamamen senin. Hepsini gönül rahatlığıyla onaylıyorum.</p>
+    <div class="venues" id="venues"></div>
+    <button class="btn btn-gold next" id="venueNext" disabled data-go="time">Bunu seçtim →</button>
+  </section>
+
+  <!-- 4: saat -->
+  <section class="screen" data-screen="time">
+    <div class="topbar"><button class="back" data-back aria-label="Geri">←</button><div class="dots" data-step="2"></div></div>
+    <h2>Kaçta hazır olursun?</h2>
+    <p class="sub">Dürüst ol 😌 Kimse seni yargılamıyor. Kuzu biraz yargılıyor ama o kadar.</p>
+    <div class="chips" id="times"></div>
+    <div class="note-out" id="timeNote"></div>
+    <button class="btn btn-gold next" id="timeNext" disabled data-go="ride">Tamamdır →</button>
+  </section>
+
+  <!-- 5: ulaşım -->
+  <section class="screen" data-screen="ride">
+    <div class="topbar"><button class="back" data-back aria-label="Geri">←</button><div class="dots" data-step="3"></div></div>
+    <h2>Nasıl buluşalım?</h2>
+    <p class="sub">İki seçenek de bana uyar.</p>
+    <div class="options" id="rides"></div>
+    <button class="btn btn-gold next" id="rideNext" disabled data-go="extras">Devam →</button>
+  </section>
+
+  <!-- 6: mini sorular -->
+  <section class="screen" data-screen="extras">
+    <div class="topbar"><button class="back" data-back aria-label="Geri">←</button><div class="dots" data-step="4"></div></div>
+    <h2>Birkaç önemli soru</h2>
+    <p class="sub">Bunlar bilimsel amaçlıdır.</p>
+    <div class="q-block">
+      <h3>🍰 Tatlıyı paylaşır mıyız?</h3>
+      <div class="options" id="dessert"></div>
+    </div>
+    <div class="q-block">
+      <h3>🍃 Menüde yaprak sarma yoksa?</h3>
+      <div class="options" id="sarma"></div>
+    </div>
+    <div class="footer-space"></div>
+    <button class="btn btn-gold next" id="extrasNext" disabled data-go="treaty">Son bir şey kaldı →</button>
+  </section>
+
+  <!-- 7: kuzu antlaşması -->
+  <section class="screen" data-screen="treaty">
+    <div class="topbar"><button class="back" data-back aria-label="Geri">←</button><div class="dots" data-step="5"></div></div>
+    <div class="kuzu-row" style="margin-bottom:0">
+      <div data-kuzu data-small></div>
+      <div class="bubble">Bu kısım benim için çok önemli. Lütfen dikkatle oku 🥺</div>
+    </div>
+    <div class="treaty">
+      <h2>🐑 Kuzu Antlaşması</h2>
+      <div class="seal-line">30 Ekim 2026 · İstanbul</div>
+      <ol>
+        <li>Emirhan o akşam <b>kuzu yemeyeceğini</b> resmen taahhüt eder. Kuzu şiş, kuzu tandır, kuzu pirzola dahil.</li>
+        <li>Menüde kuzu görürse <b>gözlerini kaçıracaktır</b>.</li>
+        <li>Hava, Emirhan'ın geçmişteki kuzu tercihlerini <b>bu akşamlık affeder</b>.</li>
+        <li>İhlal durumunda tatlının tamamı Hava'ya geçer.</li>
+      </ol>
+      <div class="sig-label"><span>Hava'nın imzası</span><button id="sigClear" type="button">temizle</button></div>
+      <canvas id="sig"></canvas>
+      <div class="sig-hint">parmağınla imzala ✍️</div>
+    </div>
+    <button class="btn btn-gold next" id="treatyNext" disabled>İmzaladım, biletimi ver 🎟️</button>
+  </section>
+
+  <!-- 8: bilet -->
+  <section class="screen" data-screen="ticket">
+    <div style="text-align:center">
+      <h2>Randevun hazır 🎉</h2>
+      <p class="sub">Ekran görüntüsünü al, sonra bana gönder.</p>
+    </div>
+    <div class="ticket">
+      <div class="t-top">
+        <div class="brand">Randevu Bileti</div>
+        <div class="cls">VIP<br>VERY IMPORTANT HAVA</div>
+      </div>
+      <div class="t-route">
+        <div><div class="lbl">Yolcu</div><div class="who">Hava</div></div>
+        <div class="mid"><span>💙</span></div>
+        <div style="text-align:right"><div class="lbl">Refakatçi</div><div class="who">Emirhan</div></div>
+      </div>
+      <div class="t-grid">
+        <div class="wide"><div class="lbl">Mekan</div><div class="v" id="tVenue"></div></div>
+        <div><div class="lbl">Tarih</div><div class="v">30 Ekim, Cuma</div></div>
+        <div><div class="lbl">Saat</div><div class="v" id="tTime"></div></div>
+        <div><div class="lbl">Buluşma</div><div class="v" id="tRide"></div></div>
+        <div><div class="lbl">Koltuk</div><div class="v">Karşımda</div></div>
+        <div><div class="lbl">Tatlı</div><div class="v" id="tDessert"></div></div>
+        <div><div class="lbl">Kuzu riski</div><div class="v">%0 🐑</div></div>
+      </div>
+      <div class="t-cut"></div>
+      <div class="t-bottom">
+        <img id="tSig" alt="Hava'nın imzası">
+        <div class="barcode"></div>
+      </div>
+    </div>
+    <div class="countdown" id="countdown"></div>
+    <a class="btn wa" id="waLink" target="_blank" rel="noopener">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+      Emirhan'a gönder
+    </a>
+    <div class="ps">P.S. Kuzu da selam söylüyor 🐑</div>
+  </section>
+</main>
+
+<script>
+const WA_NUMBER = "905349750044";
+
+const VENUES = [
+  { id: "inci", name: "İnci Bosphorus", area: "Çengelköy · Boğaz kıyısında tarihi yalı", emoji: "🏛️",
+    note: "Restore edilmiş bir yalı, dibinde Boğaz. Kendini bir dizinin içinde hissetme ihtimalin yüksek.",
+    stats: [["Manzara", 5], ["Romantizm", 5]], lamb: "Düşük. Söz veriyorum." },
+  { id: "ulus", name: "Ulus 29", area: "Ulus · tepeden bütün Boğaz", emoji: "🌉",
+    note: "Köprüler ayağımızın altında. Biraz abartı mı? Evet. Hak ediyor musun? O da evet.",
+    stats: [["Manzara", 5], ["Şıklık", 5]], lamb: "Orta. Ama Antlaşma var." },
+  { id: "lacivert", name: "Lacivert", area: "Anadolu Hisarı · su kenarında balık", emoji: "🐟",
+    badge: "Adı bile en sevdiğin renk 👀",
+    note: "Su kenarı, taze balık, Boğaz. Bir de adına bak. Bence bu bir işaret.",
+    stats: [["Balık", 5], ["Suya yakınlık", 5]], lamb: "Sıfır. Burası balıkçı 🐟" },
+  { id: "olivetto", name: "L'Olivetto", area: "Ataşehir · İtalyan", emoji: "🍝",
+    note: "Makarna, tiramisu, belki canlı müzik. Lady and the Tramp sahnesi yapmayacağım. Muhtemelen.",
+    stats: [["Makarna", 5], ["Tatlı", 5]], lamb: "Çok düşük. Mamma mia." },
+  { id: "firuzende", name: "Firuzende", area: "Galata · kulenin dibinde", emoji: "🗼",
+    note: "Galata Kulesi bize el sallıyor. Yemekten sonra yürüyüş bahanesi de hazır.",
+    stats: [["Şehir havası", 5], ["Yürüyüş", 4]], lamb: "Bakacağız 👀" },
+];
+
+const TIMES = [
+  { t: "20:30", note: "Dakik kadın. Saygı duyuyorum 🫡" },
+  { t: "21:00", note: "Klasik. Altın saat ✨" },
+  { t: "21:30", note: "Hazırlanmak bir sanattır, anlıyorum 💅" },
+  { t: "22:00", note: "Gece kuşu! Tatlıya kesin yer kalır 🌙" },
+];
+
+const RIDES = [
+  { id: "al", em: "🚗", label: "Kapıdan al, prenses modu", short: "Kapıdan alınacak" },
+  { id: "bulus", em: "📍", label: "Mekanda buluşalım", short: "Mekanda" },
+];
+
+const DESSERTS = [
+  { id: "evet", em: "🥄", label: "Evet", short: "Paylaşılacak" },
+  { id: "kesin", em: "🍰", label: "Kesinlikle evet", short: "Kesinlikle paylaşılacak" },
+  { id: "hayir", em: "🙅‍♀️", label: "Hayır, hepsi benim", locked: true },
+];
+
+const SARMAS = [
+  { id: "idare", em: "🙂", label: "Hayatta kalırım, idare ederim", short: "İdare edilecek" },
+  { id: "sonraki", em: "🍃", label: "Bir sonraki randevu sarma randevusu olur 😌", short: "Sarma randevusu borç" },
+];
+
+const state = { venue: null, time: null, ride: null, dessert: null, sarma: null, signed: false };
+const history = [];
+let current = "envelope";
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function go(name, push = true) {
+  if (push) history.push(current);
+  $(`[data-screen="${current}"]`).classList.remove("active");
+  current = name;
+  $(`[data-screen="${name}"]`).classList.add("active");
+  window.scrollTo({ top: 0, behavior: "instant" });
+  if (name === "treaty") sizeSig();
+  if (name === "ticket") buildTicket();
+}
+
+// yıldızlar
+(() => {
+  const box = $("#stars");
+  for (let i = 0; i < 70; i++) {
+    const s = document.createElement("i");
+    s.className = "star";
+    s.style.left = Math.random() * 100 + "%";
+    s.style.top = Math.random() * 100 + "%";
+    s.style.animationDelay = Math.random() * 3 + "s";
+    s.style.scale = 0.6 + Math.random() * 1.2;
+    box.appendChild(s);
+  }
+})();
+
+// kuzular
+$$("[data-kuzu]").forEach(el => {
+  const svg = $("#kuzu-tpl").content.firstElementChild.cloneNode(true);
+  if (el.hasAttribute("data-small")) svg.classList.add("small");
+  el.replaceWith(svg);
+});
+
+// adım noktaları
+$$(".dots").forEach(d => {
+  const step = +d.dataset.step;
+  d.innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="${i < step ? "on" : ""}"></i>`).join("");
+});
+
+$$("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+$$("[data-back]").forEach(b => b.addEventListener("click", () => { if (history.length) go(history.pop(), false); }));
+
+// zarf
+$("#envelope").addEventListener("click", function () {
+  if (this.classList.contains("open")) return;
+  this.classList.add("open");
+  setTimeout(() => go("ask"), 1500);
+});
+
+// evet / hayır
+const yes = $("#yes"), no = $("#no");
+const NO_TEXTS = ["Emin misin? 🤨", "Bir daha düşün", "Kuzu ağlıyor 🥺", "Sarma da ısmarlarım", "Son şansın...", "Tamam, Evet 💙"];
+let noCount = 0, lastDodge = 0;
+
+function dodge(e) {
+  if (no.dataset.converted) return;
+  e.preventDefault();
+  lastDodge = Date.now();
+  noCount++;
+  yes.style.transform = `scale(${1 + noCount * 0.12})`;
+  if (noCount >= NO_TEXTS.length) {
+    no.textContent = NO_TEXTS[NO_TEXTS.length - 1];
+    no.dataset.converted = "1";
+    no.classList.remove("no-btn", "flying");
+    no.classList.add("btn-gold");
+    no.style.left = no.style.top = "";
+    $(".yn").appendChild(no);
+    return;
+  }
+  no.textContent = NO_TEXTS[noCount - 1];
+  if (!no.classList.contains("flying")) {
+    const r = no.getBoundingClientRect();
+    no.classList.add("flying");
+    no.style.left = r.left + "px";
+    no.style.top = r.top + "px";
+    document.body.appendChild(no);
+    no.offsetWidth;
+  }
+  const w = no.offsetWidth, h = no.offsetHeight;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const x = 16 + Math.random() * Math.max(0, vw - w - 32);
+  const y = vh * 0.12 + Math.random() * Math.max(0, vh * 0.76 - h);
+  no.style.left = x + "px";
+  no.style.top = y + "px";
+}
+no.addEventListener("pointerdown", dodge);
+no.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") dodge(e); });
+no.addEventListener("click", e => { if (no.dataset.converted) sayYes(); else e.preventDefault(); });
+// Hayır kaçtıktan hemen sonra parmağın altına gelen Evet'e yanlışlıkla basılmasın
+yes.addEventListener("click", () => { if (Date.now() - lastDodge > 600) sayYes(); });
+
+function sayYes() {
+  no.remove();
+  confetti(160);
+  go("yay");
+}
+
+// mekanlar
+$("#venues").innerHTML = VENUES.map(v => `
+  <button class="venue" data-id="${v.id}" type="button">
+    <span class="check">✓</span>
+    <div class="v-head">
+      <div class="v-emoji">${v.emoji}</div>
+      <div><div class="v-name">${v.name}</div><div class="v-area">${v.area}</div></div>
+    </div>
+    ${v.badge ? `<span class="v-badge">${v.badge}</span>` : ""}
+    <div class="v-note">${v.note}</div>
+    ${v.stats.map(([k, n]) => `<div class="stat"><span>${k}</span><span class="meter">${[1,2,3,4,5].map(i => `<i class="${i <= n ? "f" : ""}"></i>`).join("")}</span></div>`).join("")}
+    <div class="stat lamb"><span>Kuzu riski 🐑</span><span class="val">${v.lamb}</span></div>
+  </button>`).join("");
+
+$$(".venue").forEach(b => b.addEventListener("click", () => {
+  $$(".venue").forEach(x => x.classList.toggle("sel", x === b));
+  state.venue = VENUES.find(v => v.id === b.dataset.id);
+  $("#venueNext").disabled = false;
+  if (state.venue.id === "lacivert") toast("Lacivert mi? Şaşırmadım 💙");
+}));
+
+// saatler
+$("#times").innerHTML = TIMES.map(t => `<button class="chip" type="button" data-t="${t.t}">${t.t}</button>`).join("");
+$$(".chip").forEach(b => b.addEventListener("click", () => {
+  $$(".chip").forEach(x => x.classList.toggle("sel", x === b));
+  const t = TIMES.find(x => x.t === b.dataset.t);
+  state.time = t.t;
+  $("#timeNote").textContent = t.note;
+  $("#timeNext").disabled = false;
+}));
+
+// seçenek listeleri
+function optionList(el, items, key, onPick) {
+  el.innerHTML = items.map(o => `<button class="opt${o.locked ? " locked" : ""}" type="button" data-id="${o.id}"><span class="em">${o.em}</span><span>${o.label}</span></button>`).join("");
+  $$(".opt", el).forEach(b => b.addEventListener("click", () => {
+    const o = items.find(x => x.id === b.dataset.id);
+    if (o.locked) { toast("Bu seçenek maalesef stokta yok 🙃"); return; }
+    $$(".opt", el).forEach(x => x.classList.toggle("sel", x === b));
+    state[key] = o;
+    onPick();
+  }));
+}
+optionList($("#rides"), RIDES, "ride", () => { $("#rideNext").disabled = false; });
+const extrasReady = () => { $("#extrasNext").disabled = !(state.dessert && state.sarma); };
+optionList($("#dessert"), DESSERTS, "dessert", extrasReady);
+optionList($("#sarma"), SARMAS, "sarma", extrasReady);
+
+// imza
+const sig = $("#sig"), sctx = sig.getContext("2d");
+let drawing = false, last = null;
+function sizeSig() {
+  const r = sig.getBoundingClientRect();
+  if (!r.width) return;
+  const dpr = window.devicePixelRatio || 1;
+  if (sig.width === Math.round(r.width * dpr)) return;
+  sig.width = Math.round(r.width * dpr);
+  sig.height = Math.round(r.height * dpr);
+  sctx.scale(dpr, dpr);
+  sctx.lineCap = sctx.lineJoin = "round";
+  sctx.lineWidth = 2.6;
+  sctx.strokeStyle = "#13204a";
+  state.signed = false;
+  $("#treatyNext").disabled = true;
+}
+const pos = e => { const r = sig.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+sig.addEventListener("pointerdown", e => { drawing = true; last = pos(e); sig.setPointerCapture(e.pointerId); });
+sig.addEventListener("pointermove", e => {
+  if (!drawing) return;
+  const p = pos(e);
+  sctx.beginPath(); sctx.moveTo(last.x, last.y); sctx.lineTo(p.x, p.y); sctx.stroke();
+  last = p;
+  if (!state.signed) { state.signed = true; $("#treatyNext").disabled = false; }
+});
+["pointerup", "pointercancel"].forEach(t => sig.addEventListener(t, () => { drawing = false; }));
+$("#sigClear").addEventListener("click", () => {
+  sctx.clearRect(0, 0, sig.width, sig.height);
+  state.signed = false;
+  $("#treatyNext").disabled = true;
+});
+$("#treatyNext").addEventListener("click", () => { confetti(220); go("ticket"); });
+
+// bilet
+let cdTimer;
+function buildTicket() {
+  $("#tVenue").textContent = state.venue.name;
+  $("#tTime").textContent = state.time;
+  $("#tRide").textContent = state.ride.short;
+  $("#tDessert").textContent = state.dessert.id === "kesin" ? "Kesin paylaşılacak" : "Paylaşılacak";
+  $("#tSig").src = sig.toDataURL("image/png");
+
+  const msg = [
+    "Emirhan! Davetini kabul ediyorum 💙",
+    "",
+    `📍 Mekan: ${state.venue.name}`,
+    `🕘 Saat: 30 Ekim Cuma, ${state.time}`,
+    `🚗 Buluşma: ${state.ride.short}`,
+    `🍰 Tatlı: ${state.dessert.short}`,
+    `🍃 Sarma: ${state.sarma.short}`,
+    "🐑 Kuzu Antlaşması: imzalandı ✍️",
+  ].join("\n");
+  $("#waLink").href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+
+  const target = new Date(`2026-10-30T${state.time}:00+03:00`);
+  const tick = () => {
+    const ms = target - Date.now();
+    if (ms <= 0) { $("#countdown").innerHTML = "<b>Bu akşam!</b> 💙"; return; }
+    const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60;
+    $("#countdown").innerHTML = `Randevuya <b>${d}</b> gün <b>${h}</b> saat <b>${m}</b> dakika kaldı`;
+  };
+  tick();
+  clearInterval(cdTimer);
+  cdTimer = setInterval(tick, 15000);
+}
+
+// konfeti
+const cv = $("#confetti"), cx = cv.getContext("2d");
+let parts = [], raf = null;
+function resizeCv() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; cx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); }
+addEventListener("resize", resizeCv); resizeCv();
+function confetti(n) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const colors = ["#f2c46d", "#ff9fb2", "#fdf6e9", "#5f86ff", "#2a4185"];
+  for (let i = 0; i < n; i++) {
+    parts.push({
+      x: innerWidth / 2 + (Math.random() - .5) * 80, y: innerHeight * .4,
+      vx: (Math.random() - .5) * 14, vy: -Math.random() * 15 - 4,
+      r: Math.random() * Math.PI, vr: (Math.random() - .5) * .3,
+      s: 6 + Math.random() * 7, c: colors[i % colors.length],
+      k: Math.random() < .06 ? "🐑" : Math.random() < .1 ? "💙" : null, life: 0,
+    });
+  }
+  if (!raf) loop();
+}
+function loop() {
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parts.forEach(p => {
+    p.vy += .32; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life++;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r);
+    if (p.k) { cx.font = `${p.s * 1.2}px serif`; cx.fillText(p.k, -p.s, p.s); }
+    else { cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); }
+    cx.restore();
+  });
+  parts = parts.filter(p => p.y < innerHeight + 40 && p.life < 400);
+  raf = parts.length ? requestAnimationFrame(loop) : (cx.clearRect(0, 0, innerWidth, innerHeight), null);
+}
+</script>
+</body>
+</html>
